@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="user-list">
+    <h3>Online Users</h3>
+    <ul id="users"></ul>
+  </div>
+  <div id="chat"></div>
+  <form id="message-form">
+    <input type="text" id="message-input" placeholder="Enter your Message" autocomplete="off" required />
+    <button type="submit">Send</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io()
+
+    const chat = document.getElementById("chat")
+    const messageForm = document.getElementById("message-form")
+    const messageInput = document.getElementById("message-input")
+    const userList = document.getElementById("users")
+
+    const userName = prompt("Enter your name")
+    socket.emit("join", userName)
+
+    socket.on("userJoined", (user) => {
+      addMessage(`${user} joined the chat`)
+    })
+
+    socket.on("userLeft", (user) => {
+      addMessage(`${user} has left the chat`)
+    })
+
+    socket.on("userList", (users) => {
+      userList.innerHTML = users.map((user) => `<li>${user}</li>`).join("")
+    })
+
+    // message from server
+    socket.on("chatMessage", (data) => {
+      addMessage(`${data.userName}: ${data.message}`)
+    })
+
+    //handle form submission
+    messageForm.addEventListener("submit", (e) => {
+      e.preventDefault()
+
+      const extractedMessage = messageInput.value.trim()
+      if (extractedMessage) {
+        socket.emit("chatMessage", {
+          userName,
+          message: extractedMessage
+        })
+        messageInput.value = ""
+      }
+    })
+
+    function addMessage(input) {
+      const msgElement = document.createElement("div")
+      msgElement.textContent = input
+      chat.appendChild(msgElement)
+
+      // scroll to bottom
+      chat.scrollTop = chat.scrollHeight
+    }
+  </script>
+</body>
+
+</html>
