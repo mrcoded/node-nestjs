@@ -12,7 +12,7 @@ const bookRoutes = require('./mongoDB-intermediate/routes/book-routes')
 // const bookRoutes = require('./bookstoreAPI/routes/books.routes')
 
 const app = express();
-const port = process.env.PORT || 3000
+// const port = process.env.PORT || 3000
 
 //create http server
 const server = http.createServer(app)
@@ -20,11 +20,12 @@ const server = http.createServer(app)
 const io = socket(server)
 
 //connect to database
-// connectToDB()
+connectToDB()
 
 //middleware
 app.use(express.static("public"))
 
+// ***********NODEJS-SOCKET*************
 //socket connection
 const users = new Set()
 
@@ -83,6 +84,6 @@ app.use("/reference", bookRoutes)
 // app.listen(port, () => {
 //   console.log(`Server is running on port ${port}`)
 // })
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
-})
+// server.listen(port, () => {
+//   console.log(`Server is running on port ${port}`)
+// })
