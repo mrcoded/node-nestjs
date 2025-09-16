@@ -1,0 +1,5 @@
+# deps
+node_modules/
+.env
+# Exclude the SQLite database file
+*.sqlite
